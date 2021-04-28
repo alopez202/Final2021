@@ -98,6 +98,24 @@ basicCC <- ggplot(Females,aes(x=infected,y=prcnt*100,fill=treatment))
 basicCC + geom_bar(stat="identity", position = "dodge")
 ```
 
+## Numerical Summaries
+
+```{r}
+table2 <- xtabs(~treatment + infected, data=Femaledata)
+rowPerc(table2)
+colPerc(table2)
+print(table2)
+```
+
+## Inferential Results
+
+```{r}
+chisq.test(table2)
+chisqtestGC(table2)
+fisher.test(table2)
+```
+The vaccine is 67% effective in Females.
+
 # LGBTQ
 
 # Drug Users
