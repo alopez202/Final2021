@@ -28,6 +28,8 @@ The first step is isolating the subpopulations
 ```{r}
 maledata<- filter(FinalData,sex=="guy")
 maledata$sex <- as.factor(maledata$sex)
+maledata$infected=factor(maledata$infected)
+maledata$infected<-relevel(maledata$infected,"OK")
 ```
 
 # Males
@@ -67,7 +69,7 @@ chisq.test(table1)
 chisqtestGC(table1)
 fisher.test(table1)
 ```
-The Chi Squared table shows that the P-Value of 0.0006181 is so smal  that it is highly unlikely that the results are by chance.  
+The Chi Squared table shows that the P-Value of 0.0006181 is so small  that it is highly unlikely that the results are by chance.  
 $H_0$ the null hypothesis given taking the vaccine there is no difference of whether males can contract Covid-19 or not.  
 $H_0$ the alternative hypothesis is that the vaccine in fact does make a difference in whether or not a male contracts Covid-19. Therefore we Reject the Null Hypothesis.
 
@@ -80,6 +82,9 @@ Ultimately the vaccine is 40% effective in the male population, which is absolut
 ```{r}
 Femaledata <- filter(FinalData,sex=="gal")
 Femaledata$sex <- as.factor(Femaledata$sex)
+Femaledata$infected=factor(Femaledata$infected)
+Femaledata$infected<-relevel(Femaledata$infected,"OK")
+levels(Femaledata$infected)
 ```
 
 ## Bar Chart
@@ -116,9 +121,98 @@ fisher.test(table2)
 ```
 The vaccine is 67% effective in Females.
 
+# Drug Users
+
+
+# Method
+
+```{r}
+Druggiedata <- filter(FinalData,DrugUser=="yes")
+Druggiedata$DrugUser <- as.factor(Druggiedata$DrugUser)
+Druggiedata$infected=factor(Druggiedata$infected)
+Druggiedata$infected<-relevel(Druggiedata$infected,"OK")
+```
+
+## Bar Chart
+
+```{r}
+Druggies <- Druggiedata %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+
+# the group_by followed by summarize(count=n())
+
+basicC <- ggplot(Druggies,aes(x=infected,y=count,fill=treatment))
+basicC + geom_bar(stat="identity",position="dodge")
+
+#Now for percentage plot
+
+basicCC <- ggplot(Druggies,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC + geom_bar(stat="identity", position = "dodge")
+```
+
+
+## Numerical Summaries
+
+```{r}
+table3 <- xtabs(~treatment + infected, data=Druggiedata)
+rowPerc(table3)
+colPerc(table3)
+print(table3)
+```
+
+## Inferential Results
+
+```{r}
+chisq.test(table3)
+chisqtestGC(table3)
+fisher.test(table3)
+```
+The vaccine is 60% effective in the Druggie population.
+
 # LGBTQ
 
-# Drug Users
+# Method
+
+```{r}
+LGBTQdata <- filter(FinalData,LGBTQ=="gay")
+LGBTQdata$DrugUser <- as.factor(LGBTQdata$LGBTQ)
+LGBTQdata$infected=factor(LGBTQdata$infected)
+LGBTQdata$infected<-relevel(LGBTQdata$infected,"OK")
+```
+
+## Bar Chart
+
+```{r}
+LGBTQ <- LGBTQdata %>% group_by(infected,treatment) %>% summarize(count=n()) %>% mutate(prcnt=count/sum(count))
+
+# the group_by followed by summarize(count=n())
+
+basicC <- ggplot(LGBTQ,aes(x=infected,y=count,fill=treatment))
+basicC + geom_bar(stat="identity",position="dodge")
+
+#Now for percentage plot
+
+basicCC <- ggplot(LGBTQ,aes(x=infected,y=prcnt*100,fill=treatment)) 
+basicCC + geom_bar(stat="identity", position = "dodge")
+```
+
+
+## Numerical Summaries
+
+```{r}
+table4 <- xtabs(~treatment + infected, data=LGBTQdata)
+rowPerc(table4)
+colPerc(table4)
+print(table4)
+```
+
+## Inferential Results
+
+```{r}
+chisq.test(table4)
+chisqtestGC(table4)
+fisher.test(table4)
+```
+The vaccine is not effected in the LGBTQ population, it is only 29% effective.
 
 # Discussion & Conclusion
 
